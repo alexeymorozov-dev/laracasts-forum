@@ -26,8 +26,7 @@ class ReplyFactory extends Factory
     {
         return [
             'body' => $this->faker->sentence,
-            'thread_id' => Thread::factory()->create()->id,
-            'user_id'   => User::factory()->create()->id,
+            'user_id'   => rand(1, 10),
         ];
     }
 }
