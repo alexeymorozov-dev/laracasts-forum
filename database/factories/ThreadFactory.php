@@ -25,8 +25,6 @@ class ThreadFactory extends Factory
         return [
             'title'   => $this->faker->sentence,
             'body'    => $this->faker->paragraph,
-            'user_id' => rand(1, 10),
-            'channel_id' => rand(1, 10),
         ];
     }
 }
