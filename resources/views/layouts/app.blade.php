@@ -36,12 +36,18 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="navbar-nav mr-auto">
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="/threads">All Threads</a>
-                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Browse</a>
 
-                    <li>
-                        <a class="nav-link" href="/threads/create">New Thread</a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/threads">All Threads</a>
+                            @auth
+                                <a class="dropdown-item"
+                                   href="/threads?by={{ auth()->user()->name }}">My Threads</a>
+                                <a class="dropdown-item" href="/threads/create">New Thread</a>
+                            @endauth
+                        </div>
                     </li>
 
                     <li class="nav-item dropdown">
@@ -50,9 +56,11 @@
 
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             {{-- $channels was declared in AppServiceProvider --}}
-                                @foreach($channels as $channel)
-                                    <a class="dropdown-item" href="/threads/{{ $channel->slug }}">{{ $channel->title }}</a>
-                                @endforeach
+                            @foreach($channels as $channel)
+                                <a class="dropdown-item" href="/threads/{{ $channel->slug }}">
+                                    {{ $channel->title }}
+                                </a>
+                            @endforeach
                         </div>
                     </li>
 
