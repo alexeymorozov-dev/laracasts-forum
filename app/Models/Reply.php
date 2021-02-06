@@ -11,6 +11,11 @@ class Reply extends Model
 
     protected $guarded = [];
 
+    /**
+     * A ryply belongs to a user
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo\
+     */
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id');
