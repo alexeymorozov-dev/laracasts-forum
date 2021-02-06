@@ -58,10 +58,11 @@ class ThreadController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Thread  $thread
+     * @param $channelId
+     * @param \App\Models\Thread $thread
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
-    public function show(Thread $thread)
+    public function show($channelId, Thread $thread)
     {
         return view('threads.show', compact('thread'));
     }

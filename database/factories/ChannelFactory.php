@@ -2,18 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\Thread;
-use App\Models\User;
+use App\Models\Channel;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
-class ThreadFactory extends Factory
+class ChannelFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Thread::class;
+    protected $model = Channel::class;
 
     /**
      * Define the model's default state.
@@ -22,11 +22,11 @@ class ThreadFactory extends Factory
      */
     public function definition()
     {
+        $title= $this->faker->unique()->word;
+
         return [
-            'title'   => $this->faker->sentence,
-            'body'    => $this->faker->paragraph,
-            'user_id' => rand(1, 10),
-            'channel_id' => rand(1, 10),
+            'title' => $title,
+            'slug'  => Str::slug($title),
         ];
     }
 }
