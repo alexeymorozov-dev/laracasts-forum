@@ -24,9 +24,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Share all channels in layouts.app for a dropdown
-        \View::composer(['layouts.app', 'threads.create'], function ($view) {
-            $view->with('channels', Channel::all());
-        });
     }
 }
