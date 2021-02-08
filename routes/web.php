@@ -33,4 +33,4 @@ Route::get('/threads/{channel}/{thread}', [ThreadController::class, 'show']);
 
 Route::post('/threads/{channel}/{thread}/replies', [ReplyController::class, 'store']);
 
-Route::get('/reply/{reply}/favorites', [FavoriteController::class, 'store']);
+Route::post('/reply/{reply}/favorites', [FavoriteController::class, 'store']);
