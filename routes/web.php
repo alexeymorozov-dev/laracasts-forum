@@ -1,6 +1,8 @@
 <?php
 
-use App\Http\Controllers\{ThreadController, ReplyController};
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\ReplyController;
+use App\Http\Controllers\ThreadController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,3 +32,5 @@ Route::post('/threads', [ThreadController::class, 'store']);
 Route::get('/threads/{channel}/{thread}', [ThreadController::class, 'show']);
 
 Route::post('/threads/{channel}/{thread}/replies', [ReplyController::class, 'store']);
+
+Route::get('/reply/{reply}/favorites', [FavoriteController::class, 'store']);
