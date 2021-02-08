@@ -25,8 +25,6 @@ class ViewServiceProvider extends ServiceProvider
     public function boot()
     {
         // Share all channels for a dropdown and a select tag
-        \View::composer(['layouts.app', 'threads.create'], function ($view) {
-            $view->with('channels', Channel::all());
-        });
+        \View::share('channels', Channel::all());
     }
 }

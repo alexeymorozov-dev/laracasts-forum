@@ -30,6 +30,9 @@ class ThreadController extends Controller
     public function index(Channel $channel, ThreadFilters $filters)
     {
         $threads = $this->getThreads($filters, $channel);
+        $channels = \Cache::rememberForever('channels', function() {
+            return Channel::all();
+        });
 
         return view('threads.index', compact('threads'));
     }
@@ -47,22 +50,22 @@ class ThreadController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
      */
     public function store(Request $request)
     {
         $this->validate($request, [
-           'title'      => 'required',
-           'body'       => 'required',
-           'channel_id' => 'required|exists:channels,id',
+            'title' => 'required',
+            'body' => 'required',
+            'channel_id' => 'required|exists:channels,id',
         ]);
 
         $thread = Thread::create([
-            'user_id'    => auth()->id(),
+            'user_id' => auth()->id(),
             'channel_id' => $request['channel_id'],
-            'title'      => $request['title'],
-            'body'       => $request['body'],
+            'title' => $request['title'],
+            'body' => $request['body'],
 
         ]);
 
@@ -87,7 +90,7 @@ class ThreadController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Thread  $thread
+     * @param \App\Models\Thread $thread
      * @return \Illuminate\Http\Response
      */
     public function edit(Thread $thread)
@@ -98,8 +101,8 @@ class ThreadController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Thread  $thread
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Thread $thread
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Thread $thread)
@@ -110,7 +113,7 @@ class ThreadController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Thread  $thread
+     * @param \App\Models\Thread $thread
      * @return \Illuminate\Http\Response
      */
     public function destroy(Thread $thread)
@@ -125,7 +128,7 @@ class ThreadController extends Controller
      */
     protected function getThreads(ThreadFilters $filters, Channel $channel)
     {
-        $threads = Thread::latest()->filter($filters);
+        $threads = Thread::with('channel')->latest()->filter($filters);
 
         if ($channel->exists) {
             $threads->where('channel_id', $channel->id);

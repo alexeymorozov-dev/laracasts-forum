@@ -74,7 +74,7 @@
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Channels</a>
 
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            {{-- $channels was declared in AppServiceProvider --}}
+                            {{-- $channels was declared in ViewServiceProvider --}}
                             @foreach($channels as $channel)
                                 <a class="dropdown-item" href="/threads/{{ $channel->slug }}">
                                     {{ $channel->title }}
