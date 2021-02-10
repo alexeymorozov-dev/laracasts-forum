@@ -115,9 +115,12 @@ class ThreadController extends Controller
      *
      * @param \App\Models\Thread $thread
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy($channel, Thread $thread)
     {
+        $this->authorize('update', $thread);
+
         $thread->delete();
 
         return redirect('/threads');

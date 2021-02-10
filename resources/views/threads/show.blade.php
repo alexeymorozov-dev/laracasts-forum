@@ -16,9 +16,9 @@
                                 @csrf
                                 @method('DELETE')
 
-                                @if($thread->creator->id === auth()->id())
-                                    <button type="submit" class="btn btn-danger">Delete Thread</button>
-                                @endif
+                                @can ('update', $thread)
+                                    <button type="submit" class="btn btn-link">Delete Thread</button>
+                                @endcan
                             </form>
                         </div>
                     </div>
