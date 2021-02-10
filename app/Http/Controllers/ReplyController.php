@@ -20,6 +20,7 @@ class ReplyController extends Controller
      * @param $channelId
      * @param Thread $thread
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store($channelId, Thread $thread)
     {

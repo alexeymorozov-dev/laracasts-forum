@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Favorite;
+use App\Models\Traits\Favorable;
 use App\Models\Reply;
 use Illuminate\Http\Request;
 

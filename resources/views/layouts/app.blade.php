@@ -32,6 +32,12 @@
         .flex {
             flex: 1;
         }
+
+        .page-header {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 9px;
+            margin: 40px 0 20px;
+        }
     </style>
 
 </head>

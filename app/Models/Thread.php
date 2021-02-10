@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -53,7 +54,7 @@ class Thread extends Model
     /**
      * A thread belongs to a user
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo\
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function creator()
     {

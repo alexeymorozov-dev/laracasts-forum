@@ -1,10 +1,12 @@
 <?php
 
 
-namespace App\Models;
+namespace App\Models\Traits;
 
 
-trait Favoritable
+use App\Models\Favorite;
+
+trait Favorable
 {
 
     public function getFavoritesCountAttribute()
