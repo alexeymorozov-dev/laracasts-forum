@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReplyController;
 use App\Http\Controllers\ThreadController;
 use Illuminate\Support\Facades\Route;
@@ -34,3 +35,5 @@ Route::get('/threads/{channel}/{thread}', [ThreadController::class, 'show']);
 Route::post('/threads/{channel}/{thread}/replies', [ReplyController::class, 'store']);
 
 Route::post('/reply/{reply}/favorites', [FavoriteController::class, 'store']);
+
+Route::get('profiles/{user}', [ProfileController::class, 'show'])->name('profile');
