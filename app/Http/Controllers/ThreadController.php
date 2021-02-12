@@ -70,7 +70,8 @@ class ThreadController extends Controller
 
         ]);
 
-        return redirect($thread->path());
+        return redirect($thread->path())
+            ->with('flash', 'The thread has been published.');
     }
 
     /**
