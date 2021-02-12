@@ -1,9 +1,9 @@
 @component('profiles.activities._activity')
     @slot('heading')
-        {{ $profileUser->name }} replied to
-        <a href="{{ $record->subject->thread->path() }}">
-            {{ $record->subject->thread->title }}
-        </a>
+        <strong>{{ $profileUser->name }}</strong>
+            <a href="{{ $record->subject->path() }}">
+                replied to {{ $record->subject->thread->title }}
+            </a>
     @endslot
 
     @slot('body')
