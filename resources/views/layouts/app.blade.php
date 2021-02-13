@@ -20,24 +20,22 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
     <style>
-        body {
-            padding-bottom: 100px;
-        }
+
+        body { padding-bottom: 100px; }
 
         .level {
             display: flex;
             align-items: center;
         }
 
-        .flex {
-            flex: 1;
-        }
+        .flex { flex: 1; }
 
         .page-header {
             border-bottom: 1px solid #eee;
             padding-bottom: 9px;
             margin: 40px 0 20px;
         }
+
     </style>
 
 </head>

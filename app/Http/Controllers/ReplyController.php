@@ -18,6 +18,8 @@ class ReplyController extends Controller
 
 
     /**
+     * Store the given reply.
+     *
      * @param $channelId
      * @param Thread $thread
      * @return \Illuminate\Http\RedirectResponse
@@ -28,13 +30,34 @@ class ReplyController extends Controller
         $this->validate(request(), ['body' => 'required']);
 
         $thread->addReply([
-            'body'    => \request('body'),
+            'body' => \request('body'),
             'user_id' => auth()->id()
         ]);
 
         return back()->with('flash', 'The reply has been left.');
     }
 
+    /**
+     * Update the given reply.
+     *
+     * @param \App\Models\Reply $reply
+     */
+    public function update(Reply $reply)
+    {
+        $this->authorize('update', $reply);
+
+        $this->validate(\request(), ['body' => 'required']);
+
+        $reply->update(request(['body']));
+    }
+
+    /**
+     * Delete the given reply.
+     *
+     * @param Reply $reply
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function destroy(Reply $reply)
     {
         $this->authorize('update', $reply);

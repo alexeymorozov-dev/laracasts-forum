@@ -21,11 +21,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+/* Auth */
 Auth::routes();
 
-
+/* Home */
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+/* Threads */
 Route::get('/threads', [ThreadController::class, 'index']);
 Route::get('/threads/create', [ThreadController::class, 'create']);
 Route::get('threads/{channel}', [ThreadController::class, 'index']);
@@ -33,10 +35,13 @@ Route::post('/threads', [ThreadController::class, 'store']);
 Route::get('/threads/{channel}/{thread}', [ThreadController::class, 'show']);
 Route::delete('/threads/{channel}/{thread}', [ThreadController::class, 'destroy']);
 
-
+/* Replies */
 Route::post('/threads/{channel}/{thread}/replies', [ReplyController::class, 'store']);
+Route::patch('/replies/{reply}', [ReplyController::class, 'update']);
 Route::delete('/replies/{reply}', [ReplyController::class, 'destroy']);
 
+/* Favorites */
 Route::post('/reply/{reply}/favorites', [FavoriteController::class, 'store']);
 
+/* Profile */
 Route::get('profiles/{user}', [ProfileController::class, 'show'])->name('profile');
