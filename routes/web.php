@@ -42,6 +42,7 @@ Route::delete('/replies/{reply}', [ReplyController::class, 'destroy']);
 
 /* Favorites */
 Route::post('/reply/{reply}/favorites', [FavoriteController::class, 'store']);
+Route::delete('/reply/{reply}/favorites', [FavoriteController::class, 'destroy']);
 
 /* Profile */
 Route::get('profiles/{user}', [ProfileController::class, 'show'])->name('profile');

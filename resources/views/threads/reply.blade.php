@@ -10,16 +10,7 @@
                 </h5>
 
                 <div>
-                    <form method="POST" action="/reply/{{ $reply->id }}/favorites">
-                        @csrf
-
-                        <button type="submit" class="btn btn-primary"
-                                @if($reply->isFavorited()) disabled @endif
-                        >
-                            {{ $reply->favorites_count }}
-                            {{ \Str::plural('Favorite', $reply->favorites_count) }}
-                        </button>
-                    </form>
+                    <favorite :reply="{{ $reply }}"></favorite>
                 </div>
 
             </div>

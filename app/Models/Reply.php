@@ -11,9 +11,21 @@ class Reply extends Model
 {
     use HasFactory, Favorable, RecordsActivity;
 
+    /**
+     * Don't auto-apply mass assignment protection
+     *
+     * @var array
+     */
     protected $guarded = [];
 
+    /**
+     * The relations to eager load on every query
+     *
+     * @var array
+     */
     protected $with = ['owner', 'favorites'];
+
+    protected $appends = ['favoritesCount', 'isFavorited'];
 
     /**
      * A reply belongs to a user
