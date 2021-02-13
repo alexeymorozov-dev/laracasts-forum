@@ -1,8 +1,8 @@
 @component('profiles.activities._activity')
     @slot('heading')
-        <strong>{{ $profileUser->name }}</strong> published a
+        <strong>{{ $profileUser->name }}</strong>
         <a href="{{ $record->subject->path() }}">
-            {{ $record->subject->title }}
+            published a {{ $record->subject->title }}
         </a>
     @endslot
 

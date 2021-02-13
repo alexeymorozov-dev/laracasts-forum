@@ -35,6 +35,7 @@ Route::delete('/threads/{channel}/{thread}', [ThreadController::class, 'destroy'
 
 
 Route::post('/threads/{channel}/{thread}/replies', [ReplyController::class, 'store']);
+Route::delete('/replies/{reply}', [ReplyController::class, 'destroy']);
 
 Route::post('/reply/{reply}/favorites', [FavoriteController::class, 'store']);
 

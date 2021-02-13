@@ -26,6 +26,8 @@ class ReplyFactory extends Factory
     {
         return [
             'body' => $this->faker->sentence,
+            'user_id' => rand(1, 10),
+            'thread_id' => rand(1, 50)
         ];
     }
 }
