@@ -36,6 +36,7 @@ Route::get('/threads/{channel}/{thread}', [ThreadController::class, 'show']);
 Route::delete('/threads/{channel}/{thread}', [ThreadController::class, 'destroy']);
 
 /* Replies */
+Route::get('/threads/{channel}/{thread}/replies', [ReplyController::class, 'index']);
 Route::post('/threads/{channel}/{thread}/replies', [ReplyController::class, 'store']);
 Route::patch('/replies/{reply}', [ReplyController::class, 'update']);
 Route::delete('/replies/{reply}', [ReplyController::class, 'destroy']);

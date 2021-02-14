@@ -35,12 +35,10 @@
                     <hr>
                     <div class="page-heading text-xl-center">Comments:</div>
 
-                    <replies :data="{{ $thread->replies }}"
-                             @added="repliesCount++"
+                    <replies @added="repliesCount++"
                              @removed="repliesCount--">
                     </replies>
 
-                    {{-- <div class="mt-4">{{ $replies->links() }}</div> --}}
                 </div>
 
                 <div class="col-md-4">

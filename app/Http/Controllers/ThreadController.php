@@ -38,6 +38,18 @@ class ThreadController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param $channel
+     * @param \App\Models\Thread $thread
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     */
+    public function show($channel, Thread $thread)
+    {
+        return view('threads.show', compact('thread'));
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
@@ -72,21 +84,6 @@ class ThreadController extends Controller
 
         return redirect($thread->path())
             ->with('flash', 'The thread has been published.');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param $channel
-     * @param \App\Models\Thread $thread
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
-     */
-    public function show($channel, Thread $thread)
-    {
-        return view('threads.show', [
-            'thread' => $thread,
-            'replies' => $thread->replies()->paginate(20)
-        ]);
     }
 
     /**
