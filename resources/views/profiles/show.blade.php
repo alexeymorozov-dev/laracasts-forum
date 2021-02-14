@@ -10,7 +10,7 @@
                     </h1>
                 </div>
 
-                @foreach($activities as $date => $activity)
+                @forelse($activities as $date => $activity)
                     <h3 class="page-header">
                         {{ $date }}
                     </h3>
@@ -19,7 +19,10 @@
                             @include("profiles.activities._{$record->type}")
                         @endif
                     @endforeach
-                @endforeach
+                @empty
+                    <p>There is no activity for this user yet...</p>
+                    <p><a href="{{ url()->previous() }}">Return back.</a></p>
+                @endforelse
 
             </div>
         </div>
