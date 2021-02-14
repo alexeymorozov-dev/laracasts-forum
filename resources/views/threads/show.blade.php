@@ -36,34 +36,11 @@
                     <div class="page-heading text-xl-center">Comments:</div>
 
                     <replies :data="{{ $thread->replies }}"
+                             @added="repliesCount++"
                              @removed="repliesCount--">
                     </replies>
 
-                    {{--                <div class="mt-4">{{ $replies->links() }}</div>--}}
-
-                    @auth
-                        <form action="{{ $thread->path() . '/replies' }}" method="POST">
-                            @csrf
-                            <div class="form-group mt-4">
-                            <textarea
-                                name="body"
-                                id="body"
-                                class="form-control"
-                                rows="5"
-                                placeholder="Have something to say?"></textarea>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary">Post</button>
-
-                        </form>
-                    @endauth
-
-                    @guest
-                        <p class="text-center mt-4">
-                            Please <a href="{{ route('login') }}">sign in</a> to participate in this
-                            discussion.
-                        </p>
-                    @endguest
+                    {{-- <div class="mt-4">{{ $replies->links() }}</div> --}}
                 </div>
 
                 <div class="col-md-4">

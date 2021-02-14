@@ -47,6 +47,11 @@ class Reply extends Model
         return $this->belongsTo(Thread::class);
     }
 
+    /**
+     * The path to the reply
+     *
+     * @return string
+     */
     public function path()
     {
         return $this->thread->path() . '#reply_' . $this->id;
