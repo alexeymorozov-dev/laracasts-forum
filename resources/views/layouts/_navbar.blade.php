@@ -47,7 +47,7 @@
 
             </ul>
 
-            <!-- Right Side Of Navbar -->
+            <!-- Right Side of Navbar -->
             <ul class="navbar-nav ml-auto">
                 <!-- Authentication Links -->
                 @guest
@@ -63,6 +63,9 @@
                         </li>
                     @endif
                 @else
+
+                    <user-notifications></user-notifications>
+
                     <li class="nav-item dropdown">
 
 
