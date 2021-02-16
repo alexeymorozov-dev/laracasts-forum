@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Models\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Thread extends Model
 {
@@ -15,7 +17,6 @@ class Thread extends Model
     protected $with = ['channel'];
 
     protected $appends = ['isSubscribedTo'];
-
 
     protected static function boot()
     {
@@ -43,7 +44,7 @@ class Thread extends Model
     /**
      * A thread has many replies
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function replies()
     {
@@ -53,7 +54,7 @@ class Thread extends Model
     /**
      * A thread belongs to a user
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function creator()
     {
@@ -63,7 +64,7 @@ class Thread extends Model
     /**
      * A thread belongs to a channel
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function channel()
     {
@@ -72,13 +73,20 @@ class Thread extends Model
 
     /**
      * Add a reply to a thread
-     *
      * @param $reply
      * @return Model
      */
     public function addReply($reply)
     {
-        return $this->replies()->create($reply);
+        $reply = $this->replies()->create($reply);
+
+        $this->subscriptions
+            ->filter(function ($sub) use ($reply) {
+                return $sub->user_id != $reply->user_id;
+            })
+            ->each->notify($reply);
+
+        return $reply;
     }
 
     /**
@@ -96,12 +104,15 @@ class Thread extends Model
     /**
      * Subscribe to the thread
      * @param null $userId
+     * @return Thread
      */
     public function subscribe($userId = null)
     {
         $this->subscriptions()->create([
             'user_id' => $userId ?: auth()->id()
         ]);
+
+        return $this;
     }
 
     /**
@@ -119,7 +130,7 @@ class Thread extends Model
     /**
      * A thread has many subscribers
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function subscriptions()
     {

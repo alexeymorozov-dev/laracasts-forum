@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Reply;
 use App\Models\Thread;
-use Illuminate\Http\Request;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Validation\ValidationException;
 
 class ReplyController extends Controller
 {
@@ -28,8 +30,8 @@ class ReplyController extends Controller
      *
      * @param $channelId
      * @param Thread $thread
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Validation\ValidationException
+     * @return RedirectResponse
+     * @throws ValidationException
      */
     public function store($channelId, Thread $thread)
     {
@@ -50,7 +52,9 @@ class ReplyController extends Controller
     /**
      * Update the given reply.
      *
-     * @param \App\Models\Reply $reply
+     * @param Reply $reply
+     * @throws AuthorizationException
+     * @throws ValidationException
      */
     public function update(Reply $reply)
     {
@@ -65,8 +69,8 @@ class ReplyController extends Controller
      * Delete the given reply.
      *
      * @param Reply $reply
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @return void
+     * @throws AuthorizationException
      */
     public function destroy(Reply $reply)
     {

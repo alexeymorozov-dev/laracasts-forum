@@ -5,9 +5,15 @@ namespace App\Http\Controllers;
 use App\Filters\ThreadFilters;
 use App\Models\Channel;
 use App\Models\Thread;
-use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
+use Illuminate\Validation\ValidationException;
 
 class ThreadController extends Controller
 {
@@ -25,7 +31,7 @@ class ThreadController extends Controller
      *
      * @param Channel $channel
      * @param ThreadFilters $filters
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @return Application|Factory|View
      */
     public function index(Channel $channel, ThreadFilters $filters)
     {
@@ -41,8 +47,8 @@ class ThreadController extends Controller
      * Display the specified resource.
      *
      * @param $channel
-     * @param \App\Models\Thread $thread
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @param Thread $thread
+     * @return Application|Factory|View
      */
     public function show($channel, Thread $thread)
     {
@@ -52,7 +58,7 @@ class ThreadController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+     * @return Application|Factory|View
      */
     public function create()
     {
@@ -62,9 +68,9 @@ class ThreadController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     * @throws \Illuminate\Validation\ValidationException
+     * @param Request $request
+     * @return Application|RedirectResponse|Redirector
+     * @throws ValidationException
      */
     public function store(Request $request)
     {
@@ -89,8 +95,8 @@ class ThreadController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\Models\Thread $thread
-     * @return \Illuminate\Http\Response
+     * @param Thread $thread
+     * @return Response
      */
     public function edit(Thread $thread)
     {
@@ -100,9 +106,9 @@ class ThreadController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Thread $thread
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Thread $thread
+     * @return Response
      */
     public function update(Request $request, Thread $thread)
     {
@@ -112,9 +118,9 @@ class ThreadController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\Thread $thread
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @param Thread $thread
+     * @return RedirectResponse
+     * @throws AuthorizationException
      */
     public function destroy($channel, Thread $thread)
     {

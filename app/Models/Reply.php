@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\Traits\RecordsActivity;
 use App\Models\Traits\Favorable;
+use App\Models\Traits\RecordsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Reply extends Model
 {
@@ -48,7 +49,7 @@ class Reply extends Model
     /**
      * A reply belongs to a user
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function owner()
     {
@@ -58,7 +59,7 @@ class Reply extends Model
     /**
      * A thread belongs to a user
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function thread()
     {

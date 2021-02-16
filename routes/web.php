@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReplyController;
 use App\Http\Controllers\ThreadController;
 use App\Http\Controllers\ThreadSubscriptionController;
+use App\Http\Controllers\UserNotificationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -56,3 +57,5 @@ Route::delete('/reply/{reply}/favorites', [FavoriteController::class, 'destroy']
 
 /* Profile */
 Route::get('profiles/{user}', [ProfileController::class, 'show'])->name('profile');
+Route::get('profiles/{user}/notifications', [UserNotificationController::class, 'index']);
+Route::delete('profiles/{user}/notifications/{notification}', [UserNotificationController::class, 'destroy']);

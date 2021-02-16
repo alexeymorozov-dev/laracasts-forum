@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Channel extends Model
 {
@@ -16,11 +17,11 @@ class Channel extends Model
     {
         return 'slug';
     }
-    
+
     /**
      * A channel has many threads
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function threads()
     {

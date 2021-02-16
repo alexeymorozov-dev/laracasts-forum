@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Traits\Favorable;
 use App\Models\Reply;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 class FavoriteController extends Controller
 {
@@ -17,7 +16,7 @@ class FavoriteController extends Controller
      * Store a new favorite in the database
      *
      * @param Reply $reply
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function store(Reply $reply)
     {
