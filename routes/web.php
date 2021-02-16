@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReplyController;
 use App\Http\Controllers\ThreadController;
+use App\Http\Controllers\ThreadSubscriptionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,15 +19,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+/* Home */
+Route::get('/', function () { return view('welcome'); });
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 /* Auth */
 Auth::routes();
-
-/* Home */
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 /* Threads */
 Route::get('/threads', [ThreadController::class, 'index']);
@@ -34,6 +33,10 @@ Route::get('threads/{channel}', [ThreadController::class, 'index']);
 Route::post('/threads', [ThreadController::class, 'store']);
 Route::get('/threads/{channel}/{thread}', [ThreadController::class, 'show']);
 Route::delete('/threads/{channel}/{thread}', [ThreadController::class, 'destroy']);
+
+/* Subscriptions */
+Route::post('/threads/{channel}/{thread}/subscriptions',
+    [ThreadSubscriptionController::class, 'store'])->middleware('auth');
 
 /* Replies */
 Route::get('/threads/{channel}/{thread}/replies', [ReplyController::class, 'index']);
