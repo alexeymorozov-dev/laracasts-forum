@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-
 class UserNotificationController extends Controller
 {
     public function __construct()
@@ -16,7 +14,7 @@ class UserNotificationController extends Controller
         return auth()->user()->unreadNotifications;
     }
 
-    public function destroy(User $user, $notificationId)
+    public function destroy($user, $notificationId)
     {
         auth()->user()->notifications()->findOrFail($notificationId)->markAsRead();
     }
