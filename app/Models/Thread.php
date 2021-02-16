@@ -89,4 +89,37 @@ class Thread extends Model
     {
         return $filters->apply($query);
     }
+
+    /**
+     * Subscribe to the thread
+     * @param null $userId
+     */
+    public function subscribe($userId = null)
+    {
+        $this->subscriptions()->create([
+            'user_id' => $userId ?: auth()->id()
+        ]);
+    }
+
+    /**
+     * Unsubscribe to the thread
+     * @param null $userId
+     */
+
+    public function unsubscribe($userId = null)
+    {
+        $this->subscriptions()
+            ->where(['user_id' => $userId ?: auth()->id()])
+            ->delete();
+    }
+
+    /**
+     * A thread has many subscribers
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function subscriptions()
+    {
+        return $this->hasMany(ThreadSubscription::class);
+    }
 }
