@@ -5,6 +5,8 @@
 
         <div class="container">
             <div class="row">
+
+                <!-- Left panel -->
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header">
@@ -40,7 +42,9 @@
                     </replies>
 
                 </div>
+                <!-- End of the left panel -->
 
+                <!-- Right panel -->
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
@@ -50,9 +54,19 @@
                                 <span
                                     v-text="repliesCount"></span> {{ \Str::plural('comment', $thread->replies_count) }}.
                             </p>
+
+                            <p>
+                                @auth
+                                    <subscribe-button :active="{{ json_encode($thread->isSubscribedTo) }}"></subscribe-button>
+                                @endauth
+                            </p>
+
+
                         </div>
                     </div>
                 </div>
+                <!-- End of the right panel -->
+
             </div>
         </div>
 

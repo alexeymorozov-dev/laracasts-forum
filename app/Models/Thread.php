@@ -14,6 +14,9 @@ class Thread extends Model
 
     protected $with = ['channel'];
 
+    protected $appends = ['isSubscribedTo'];
+
+
     protected static function boot()
     {
         parent::boot();
@@ -121,5 +124,17 @@ class Thread extends Model
     public function subscriptions()
     {
         return $this->hasMany(ThreadSubscription::class);
+    }
+
+    /**
+     * Is authenticated user subscribed to a thread
+     *
+     * @return bool
+     */
+    public function getIsSubscribedToAttribute()
+    {
+        return $this->subscriptions()
+            ->where('user_id', auth()->id())
+            ->exists();
     }
 }

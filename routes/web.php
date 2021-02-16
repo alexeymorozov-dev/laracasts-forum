@@ -20,7 +20,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 /* Home */
-Route::get('/', function () { return view('welcome'); });
+Route::get('/', function () {
+    return view('welcome');
+});
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 /* Auth */
@@ -35,8 +37,12 @@ Route::get('/threads/{channel}/{thread}', [ThreadController::class, 'show']);
 Route::delete('/threads/{channel}/{thread}', [ThreadController::class, 'destroy']);
 
 /* Subscriptions */
-Route::post('/threads/{channel}/{thread}/subscriptions',
-    [ThreadSubscriptionController::class, 'store'])->middleware('auth');
+Route::middleware('auth')->group(function () {
+    Route::post('/threads/{channel}/{thread}/subscriptions',
+        [ThreadSubscriptionController::class, 'store']);
+    Route::delete('/threads/{channel}/{thread}/subscriptions',
+        [ThreadSubscriptionController::class, 'destroy']);
+});
 
 /* Replies */
 Route::get('/threads/{channel}/{thread}/replies', [ReplyController::class, 'index']);
