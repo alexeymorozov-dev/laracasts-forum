@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Reply;
 use App\Models\Thread;
+use App\Utilities\Spam;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
+use function request;
 
 class ReplyController extends Controller
 {
@@ -33,16 +35,17 @@ class ReplyController extends Controller
      * @return RedirectResponse
      * @throws ValidationException
      */
-    public function store($channelId, Thread $thread)
+    public function store($channelId, Thread $thread, Spam $spam)
     {
         $this->validate(request(), ['body' => 'required']);
+        $spam->detect(request('body'));
 
         $reply = $thread->addReply([
-            'body' => \request('body'),
+            'body' => request('body'),
             'user_id' => auth()->id()
         ]);
 
-        if (\request()->expectsJson()) {
+        if (request()->expectsJson()) {
             return $reply->load('owner');
         }
 
@@ -60,7 +63,7 @@ class ReplyController extends Controller
     {
         $this->authorize('update', $reply);
 
-        $this->validate(\request(), ['body' => 'required']);
+        $this->validate(request(), ['body' => 'required']);
 
         $reply->update(request(['body']));
     }
