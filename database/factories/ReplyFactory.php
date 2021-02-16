@@ -2,10 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Model;
 use App\Models\Reply;
-use App\Models\Thread;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ReplyFactory extends Factory
@@ -26,8 +23,7 @@ class ReplyFactory extends Factory
     {
         return [
             'body' => $this->faker->sentence,
-            'user_id' => rand(1, 10),
-            'thread_id' => rand(1, 50)
+            'user_id' => rand(1, 10)
         ];
     }
 }

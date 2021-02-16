@@ -21,9 +21,8 @@ class DatabaseSeeder extends Seeder
         Channel::factory(5)->create();
         // Create 10 users
         User::factory(10)->create();
-        // Create 50 threads
-        Thread::factory(50)->create();
-        // Create 100 replies
-        Reply::factory(100)->create();
+        // Create 30 threads and attach a random
+        // number of replies to each of them
+        Thread::factory(30)->create();
     }
 }

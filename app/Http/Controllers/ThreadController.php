@@ -30,9 +30,9 @@ class ThreadController extends Controller
     public function index(Channel $channel, ThreadFilters $filters)
     {
         $threads = $this->getThreads($filters, $channel);
-        $channels = \Cache::rememberForever('channels', function() {
-            return Channel::all();
-        });
+//        $channels = \Cache::rememberForever('channels', function() {
+//            return Channel::all();
+//        });
 
         return view('threads.index', compact('threads'));
     }
