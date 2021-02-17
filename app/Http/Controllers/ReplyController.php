@@ -11,6 +11,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 use function request;
 
 class ReplyController extends Controller
@@ -39,9 +40,14 @@ class ReplyController extends Controller
      */
     public function store($channelId, Thread $thread)
     {
+        if (Gate::denies('create', new Reply)) {
+            return response(
+                'You are posting too frequently. Please take a break. :)', 429
+            );
+        }
+
         try {
             request()->validate(['body' => ['required', new SpamFree]]);
-
             $reply = $thread->addReply([
                 'body' => request('body'),
                 'user_id' => auth()->id()
