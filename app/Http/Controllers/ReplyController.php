@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Inspections\Spam;
 use App\Models\Reply;
 use App\Models\Thread;
-use App\Utilities\Spam;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
@@ -32,6 +32,7 @@ class ReplyController extends Controller
      *
      * @param $channelId
      * @param Thread $thread
+     * @param Spam $spam
      * @return RedirectResponse
      * @throws ValidationException
      */
