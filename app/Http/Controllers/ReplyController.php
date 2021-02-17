@@ -36,10 +36,9 @@ class ReplyController extends Controller
      * @return RedirectResponse
      * @throws ValidationException
      */
-    public function store($channelId, Thread $thread, Spam $spam)
+    public function store($channelId, Thread $thread)
     {
-        $this->validate(request(), ['body' => 'required']);
-        $spam->detect(request('body'));
+        $this->validateReply();
 
         $reply = $thread->addReply([
             'body' => request('body'),
@@ -57,6 +56,7 @@ class ReplyController extends Controller
      * Update the given reply.
      *
      * @param Reply $reply
+     * @param Spam $spam
      * @throws AuthorizationException
      * @throws ValidationException
      */
@@ -64,7 +64,7 @@ class ReplyController extends Controller
     {
         $this->authorize('update', $reply);
 
-        $this->validate(request(), ['body' => 'required']);
+        $this->validateReply();
 
         $reply->update(request(['body']));
     }
@@ -81,5 +81,15 @@ class ReplyController extends Controller
         $this->authorize('update', $reply);
 
         $reply->delete();
+    }
+
+    /**
+     * @param Spam $spam
+     * @throws ValidationException
+     */
+    protected function validateReply()
+    {
+        $this->validate(request(), ['body' => 'required']);
+        resolve(Spam::class)->detect(request('body'));
     }
 }
