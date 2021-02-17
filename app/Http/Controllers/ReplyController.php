@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Inspections\Spam;
 use App\Models\Reply;
 use App\Models\Thread;
+use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use function request;
 
@@ -32,31 +36,29 @@ class ReplyController extends Controller
      *
      * @param $channelId
      * @param Thread $thread
-     * @param Spam $spam
-     * @return RedirectResponse
-     * @throws ValidationException
+     * @return Application|ResponseFactory|Model|Response
      */
     public function store($channelId, Thread $thread)
     {
-        $this->validateReply();
+        try {
+            $this->validateReply();
 
-        $reply = $thread->addReply([
-            'body' => request('body'),
-            'user_id' => auth()->id()
-        ]);
-
-        if (request()->expectsJson()) {
-            return $reply->load('owner');
+            $reply = $thread->addReply([
+                'body' => request('body'),
+                'user_id' => auth()->id()
+            ]);
+        } catch (Exception $e) {
+            return response('Sorry, your reply cannot be saved at this time', 422);
         }
 
-        return back();
+        return $reply->load('owner');
+
     }
 
     /**
      * Update the given reply.
      *
      * @param Reply $reply
-     * @param Spam $spam
      * @throws AuthorizationException
      * @throws ValidationException
      */
@@ -64,9 +66,14 @@ class ReplyController extends Controller
     {
         $this->authorize('update', $reply);
 
-        $this->validateReply();
-
-        $reply->update(request(['body']));
+        try {
+            $this->validateReply();
+            $reply->update(request(['body']));
+        } catch (Exception $e) {
+            return response(
+                'Sorry, your reply cannot be saved at this time', 422
+            );
+        }
     }
 
     /**
