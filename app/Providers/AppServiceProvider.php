@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Channel;
+use App\Rules\SpamFree;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 

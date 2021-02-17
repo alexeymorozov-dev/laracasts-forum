@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Inspections\Spam;
 use App\Models\Reply;
 use App\Models\Thread;
+use App\Rules\SpamFree;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
-use Illuminate\Validation\ValidationException;
 use function request;
 
 class ReplyController extends Controller
@@ -41,7 +40,7 @@ class ReplyController extends Controller
     public function store($channelId, Thread $thread)
     {
         try {
-            $this->validateReply();
+            request()->validate(['body' => ['required', new SpamFree]]);
 
             $reply = $thread->addReply([
                 'body' => request('body'),
@@ -59,15 +58,15 @@ class ReplyController extends Controller
      * Update the given reply.
      *
      * @param Reply $reply
+     * @return Application|ResponseFactory|Response
      * @throws AuthorizationException
-     * @throws ValidationException
      */
     public function update(Reply $reply)
     {
         $this->authorize('update', $reply);
 
         try {
-            $this->validateReply();
+            request()->validate(['body' => ['required', new SpamFree]]);
             $reply->update(request(['body']));
         } catch (Exception $e) {
             return response(
@@ -90,13 +89,4 @@ class ReplyController extends Controller
         $reply->delete();
     }
 
-    /**
-     * @param Spam $spam
-     * @throws ValidationException
-     */
-    protected function validateReply()
-    {
-        $this->validate(request(), ['body' => 'required']);
-        resolve(Spam::class)->detect(request('body'));
-    }
 }
