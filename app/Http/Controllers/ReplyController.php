@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreatePostRequest;
 use App\Models\Reply;
 use App\Models\Thread;
 use App\Rules\SpamFree;
@@ -36,28 +37,15 @@ class ReplyController extends Controller
      *
      * @param $channelId
      * @param Thread $thread
-     * @return Application|ResponseFactory|Model|Response
+     * @param CreatePostRequest $form
+     * @return Model
      */
-    public function store($channelId, Thread $thread)
+    public function store($channelId, Thread $thread, CreatePostRequest $form)
     {
-        if (Gate::denies('create', new Reply)) {
-            return response(
-                'You are posting too frequently. Please take a break. :)', 429
-            );
-        }
-
-        try {
-            request()->validate(['body' => ['required', new SpamFree]]);
-            $reply = $thread->addReply([
-                'body' => request('body'),
-                'user_id' => auth()->id()
-            ]);
-        } catch (Exception $e) {
-            return response('Sorry, your reply cannot be saved at this time', 422);
-        }
-
-        return $reply->load('owner');
-
+        return $thread->addReply([
+            'body' => request('body'),
+            'user_id' => auth()->id()
+        ])->load('owner');
     }
 
     /**
