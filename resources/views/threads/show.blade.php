@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('header')
+    <link href="{{ asset('css/vendor/tribute.css') }}" rel="stylesheet">
+@endsection
+
 @section('content')
     <thread-view inline-template :initial-replies-count="{{ $thread->replies_count }}">
 
