@@ -8,6 +8,7 @@ use App\Models\Thread;
 use App\Rules\SpamFree;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -123,7 +124,7 @@ class ThreadController extends Controller
      *
      * @param ThreadFilters $filters
      * @param Channel $channel
-     * @return Builder[]|Collection|Thread[]
+     * @return LengthAwarePaginator
      */
     protected function getThreads(ThreadFilters $filters, Channel $channel)
     {
@@ -133,6 +134,6 @@ class ThreadController extends Controller
             $threads->where('channel_id', $channel->id);
         }
 
-        return $threads->get();
+        return $threads->paginate(10);
     }
 }
