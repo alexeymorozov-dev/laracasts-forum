@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\UserAvatarController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\HomeController;
@@ -63,3 +64,4 @@ Route::delete('profiles/{user}/notifications/{notification}', [UserNotificationC
 
 /* Api */
 Route::get('/api/users', [UserController::class, 'index']);
+Route::get('/api/users/{user}/avatar', [UserAvatarController::class, 'store'])->middleware('auth');
