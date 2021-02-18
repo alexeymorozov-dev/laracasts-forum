@@ -10,22 +10,22 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
-use Illuminate\Validation\ValidationException;
 
 class ThreadController extends Controller
 {
     /**
-     * ThreadController constructor.
+     * Create a new ThreadController instance.
      */
     public function __construct()
     {
         $this->middleware('auth')->except(['index', 'show']);
     }
-
 
     /**
      * Display a listing of the resource.
@@ -37,9 +37,10 @@ class ThreadController extends Controller
     public function index(Channel $channel, ThreadFilters $filters)
     {
         $threads = $this->getThreads($filters, $channel);
-//        $channels = \Cache::rememberForever('channels', function() {
-//            return Channel::all();
-//        });
+
+        if (\request()->wantsJson()) {
+            return $threads;
+        }
 
         return view('threads.index', compact('threads'));
     }
@@ -75,7 +76,6 @@ class ThreadController extends Controller
      *
      * @param Request $request
      * @return Application|RedirectResponse|Redirector
-     * @throws ValidationException
      */
     public function store(Request $request)
     {
@@ -98,33 +98,11 @@ class ThreadController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param Thread $thread
-     * @return Response
-     */
-    public function edit(Thread $thread)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param Thread $thread
-     * @return Response
-     */
-    public function update(Request $request, Thread $thread)
-    {
-        //
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param Thread $thread
-     * @return RedirectResponse
+     * @param $channel
+     * @return Application|Redirector|RedirectResponse
      * @throws AuthorizationException
      */
     public function destroy($channel, Thread $thread)
@@ -133,13 +111,19 @@ class ThreadController extends Controller
 
         $thread->delete();
 
+        if(\request()->wantsJson()) {
+            return \response([], 204);
+        }
+
         return redirect('/threads');
     }
 
     /**
+     * Fetch all relevant threads.
+     *
      * @param ThreadFilters $filters
      * @param Channel $channel
-     * @return mixed
+     * @return Builder[]|Collection|Thread[]
      */
     protected function getThreads(ThreadFilters $filters, Channel $channel)
     {
@@ -149,7 +133,6 @@ class ThreadController extends Controller
             $threads->where('channel_id', $channel->id);
         }
 
-        $threads = $threads->get();
-        return $threads;
+        return $threads->get();
     }
 }

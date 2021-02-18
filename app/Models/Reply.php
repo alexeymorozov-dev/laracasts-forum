@@ -9,6 +9,33 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * App\Models\Reply
+ *
+ * @property int $id
+ * @property int $thread_id
+ * @property int $user_id
+ * @property string $body
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Activity[] $activity
+ * @property-read int|null $activity_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Favorite[] $favorites
+ * @property-read mixed $favorites_count
+ * @property-read bool|mixed $is_favorited
+ * @property-read \App\Models\User $owner
+ * @property-read \App\Models\Thread $thread
+ * @method static \Illuminate\Database\Eloquent\Builder|Reply newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Reply newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Reply query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Reply whereBody($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Reply whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Reply whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Reply whereThreadId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Reply whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Reply whereUserId($value)
+ * @mixin \Eloquent
+ */
 class Reply extends Model
 {
     use HasFactory, Favorable, RecordsActivity;

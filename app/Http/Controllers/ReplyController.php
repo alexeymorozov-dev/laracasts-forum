@@ -6,18 +6,21 @@ use App\Http\Requests\CreatePostRequest;
 use App\Models\Reply;
 use App\Models\Thread;
 use App\Rules\SpamFree;
-use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
+use Illuminate\Routing\Redirector;
+use Illuminate\Validation\ValidationException;
 use function request;
 
 class ReplyController extends Controller
 {
     /**
-     * ReplyController constructor.
+     * Create a new RepliesController instance.
      */
     public function __construct()
     {
@@ -25,6 +28,13 @@ class ReplyController extends Controller
             ->except('index');
     }
 
+    /**
+     * Fetch all relevant replies
+     *
+     * @param $channel
+     * @param Thread $thread
+     * @return LengthAwarePaginator
+     */
     public function index($channel, Thread $thread)
     {
         return $thread->replies()->paginate(20);
@@ -34,8 +44,8 @@ class ReplyController extends Controller
     /**
      * Store the given reply.
      *
-     * @param $channelId
-     * @param Thread $thread
+     * @param integer           $channelId
+     * @param Thread            $thread
      * @param CreatePostRequest $form
      * @return Model
      */
@@ -51,28 +61,23 @@ class ReplyController extends Controller
      * Update the given reply.
      *
      * @param Reply $reply
-     * @return Application|ResponseFactory|Response
-     * @throws AuthorizationException
+     * @return void
+     * @throws AuthorizationException|ValidationException
      */
     public function update(Reply $reply)
     {
         $this->authorize('update', $reply);
 
-        try {
-            request()->validate(['body' => ['required', new SpamFree]]);
-            $reply->update(request(['body']));
-        } catch (Exception $e) {
-            return response(
-                'Sorry, your reply cannot be saved at this time', 422
-            );
-        }
+        $this->validate(request(), ['body' => ['required', new SpamFree]]);
+
+        $reply->update(request(['body']));
     }
 
     /**
      * Delete the given reply.
      *
      * @param Reply $reply
-     * @return void
+     * @return Application|ResponseFactory|RedirectResponse|Response
      * @throws AuthorizationException
      */
     public function destroy(Reply $reply)
@@ -80,6 +85,12 @@ class ReplyController extends Controller
         $this->authorize('update', $reply);
 
         $reply->delete();
+
+        if(request()->expectsJson()) {
+            return response(['status' => 'Reply deleted']);
+        }
+
+        return back();
     }
 
 }

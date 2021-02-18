@@ -10,6 +10,39 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * App\Models\Thread
+ *
+ * @property int $id
+ * @property int $user_id
+ * @property int $channel_id
+ * @property-read int|null $replies_count
+ * @property string $title
+ * @property string $body
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Activity[] $activity
+ * @property-read int|null $activity_count
+ * @property-read \App\Models\Channel $channel
+ * @property-read \App\Models\User $creator
+ * @property-read bool $is_subscribed_to
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Reply[] $replies
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ThreadSubscription[] $subscriptions
+ * @property-read int|null $subscriptions_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Thread filter($filters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Thread newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Thread newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Thread query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Thread whereBody($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Thread whereChannelId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Thread whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Thread whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Thread whereRepliesCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Thread whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Thread whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Thread whereUserId($value)
+ * @mixin \Eloquent
+ */
 class Thread extends Model
 {
     use HasFactory, RecordsActivity;
