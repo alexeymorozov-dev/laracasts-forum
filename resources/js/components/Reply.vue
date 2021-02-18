@@ -83,13 +83,15 @@ export default {
 
             this.editing = false;
 
-            flash('The reply has been updated!');
+            flash('The reply has been updated.');
         },
 
         destroy() {
             axios.delete('/replies/' + this.data.id);
 
             this.$emit('deleted', this.data.id);
+
+            flash('The reply has been deleted.');
         }
     }
 }

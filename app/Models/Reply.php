@@ -103,9 +103,14 @@ class Reply extends Model
         return $this->created_at->gt(Carbon::now()->subMinute());
     }
 
+    /**
+     * Fetch all mentioned users within the reply's body
+     *
+     * @return mixed
+     */
     public function mentionedUsers()
     {
-        preg_match_all('/\@([^\s\.]+)/', $this->body, $matches);
+        preg_match_all('/@([\w\-\_]+)/', $this->body, $matches);
 
         return $matches[1];
     }
@@ -118,6 +123,11 @@ class Reply extends Model
     public function path()
     {
         return $this->thread->path() . '#reply_' . $this->id;
+    }
+
+    public function setBodyAttribute($body)
+    {
+        $this->attributes['body'] = preg_replace('/@([\w\-\_]+)/', '<a href="/profiles/$1">$0</a>', $body);
     }
 
 }
