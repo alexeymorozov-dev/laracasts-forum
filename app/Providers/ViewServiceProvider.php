@@ -25,6 +25,8 @@ class ViewServiceProvider extends ServiceProvider
     public function boot()
     {
         // Share all channels for a dropdown and a select tag
-        \View::share('channels', Channel::all());
+        if (!app()->runningInConsole()) {
+            \View::share('channels', Channel::all());
+        }
     }
 }
