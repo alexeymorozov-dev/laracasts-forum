@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 
 class UserAvatarController extends Controller
 {
     /**
      * Save the user's avatar
      *
-     * @return RedirectResponse
+     * @return Application|Response|ResponseFactory
      */
     public function store()
     {
@@ -19,11 +22,12 @@ class UserAvatarController extends Controller
         ]);
 
         auth()->user()->update([
-            'avatar_path' => request()
+            'avatar_path' =>
+                request()
                 ->file('avatar')
-                ->store('avatars', 'public'),
+                ->store('images/avatars', 'public'),
         ]);
 
-        return back();
+        return response([], 204);
     }
 }

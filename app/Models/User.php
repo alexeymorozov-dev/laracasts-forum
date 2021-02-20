@@ -14,6 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * App\Models\User
@@ -153,8 +154,8 @@ class User extends Authenticatable
      *
      * @return mixed|string
      */
-    public function avatar()
+    public function getAvatarPathAttribute($avatar)
     {
-        return asset('storage/' . ($this->avatar_path ?: 'avatars/default.jpg'));
+        return asset(Storage::url($avatar ?: '/images/avatars/default.png'));
     }
 }
