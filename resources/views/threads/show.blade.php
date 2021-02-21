@@ -17,7 +17,7 @@
                             <div class="level">
 
                                 <img src="{{ $thread->creator->avatar_path }}"
-                                     class="mr-3"
+                                     class="mr-2 rounded-circle"
                                      width="25"
                                      height="25"
                                      alt="{{ $thread->creator->name }}">

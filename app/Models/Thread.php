@@ -4,7 +4,9 @@ namespace App\Models;
 
 use App\Events\ThreadHasNewReply;
 use App\Events\ThreadReceivedNewReply;
+use App\Filters\ThreadFilters;
 use App\Models\Traits\RecordsActivity;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -185,5 +187,24 @@ class Thread extends Model
         $key = $user->visitedThreadCacheKey($this);
 
         return $this->updated_at > cache($key);
+    }
+
+
+    /**
+     * Fetch all relevant threads.
+     *
+     * @param ThreadFilters $filters
+     * @param Channel $channel
+     * @return LengthAwarePaginator
+     */
+    public static function getThreads(ThreadFilters $filters, Channel $channel)
+    {
+        $threads = Thread::latest()->filter($filters);
+
+        if ($channel->exists) {
+            $threads->where('channel_id', $channel->id);
+        }
+
+        return $threads->paginate(10);
     }
 }

@@ -11,12 +11,10 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\Redis;
 
 class ThreadController extends Controller
 {
@@ -33,17 +31,19 @@ class ThreadController extends Controller
      *
      * @param Channel $channel
      * @param ThreadFilters $filters
-     * @return Application|Factory|View
+     * @return Application|LengthAwarePaginator|Factory|View
      */
     public function index(Channel $channel, ThreadFilters $filters)
     {
-        $threads = $this->getThreads($filters, $channel);
+        $threads = Thread::getThreads($filters, $channel);
 
         if (\request()->wantsJson()) {
             return $threads;
         }
 
-        return view('threads.index', compact('threads'));
+        $trending = array_map('json_decode', Redis::zrevrange('trending_threads', 0, 4));
+
+        return view('threads.index', compact('threads', 'trending'));
     }
 
     /**
@@ -58,6 +58,11 @@ class ThreadController extends Controller
         if (auth()->check()) {
             auth()->user()->read($thread);
         }
+
+        Redis::zincrby('trending_threads', 1, json_encode([
+            'title' => $thread->title,
+            'path' => $thread->path()
+        ]));
 
         return view('threads.show', compact('thread'));
     }
@@ -112,28 +117,10 @@ class ThreadController extends Controller
 
         $thread->delete();
 
-        if(\request()->wantsJson()) {
+        if (\request()->wantsJson()) {
             return \response([], 204);
         }
 
         return redirect('/threads');
-    }
-
-    /**
-     * Fetch all relevant threads.
-     *
-     * @param ThreadFilters $filters
-     * @param Channel $channel
-     * @return LengthAwarePaginator
-     */
-    protected function getThreads(ThreadFilters $filters, Channel $channel)
-    {
-        $threads = Thread::latest()->filter($filters);
-
-        if ($channel->exists) {
-            $threads->where('channel_id', $channel->id);
-        }
-
-        return $threads->paginate(10);
     }
 }
