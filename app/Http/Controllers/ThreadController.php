@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Filters\ThreadFilters;
 use App\Models\Channel;
 use App\Models\Thread;
+use App\Models\Trending;
 use App\Rules\SpamFree;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
@@ -29,11 +30,12 @@ class ThreadController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Channel $channel
+     * @param Channel       $channel
      * @param ThreadFilters $filters
+     * @param Trending      $trending
      * @return Application|LengthAwarePaginator|Factory|View
      */
-    public function index(Channel $channel, ThreadFilters $filters)
+    public function index(Channel $channel, ThreadFilters $filters, Trending $trending)
     {
         $threads = Thread::getThreads($filters, $channel);
 
@@ -41,28 +43,26 @@ class ThreadController extends Controller
             return $threads;
         }
 
-        $trending = array_map('json_decode', Redis::zrevrange('trending_threads', 0, 4));
-
-        return view('threads.index', compact('threads', 'trending'));
+        return view('threads.index', [
+            'threads' => $threads,
+            'trending' => $trending->get()
+        ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param $channel
+     * @param        $channel
      * @param Thread $thread
      * @return Application|Factory|View
      */
-    public function show($channel, Thread $thread)
+    public function show($channel, Thread $thread, Trending $trending)
     {
         if (auth()->check()) {
             auth()->user()->read($thread);
         }
 
-        Redis::zincrby('trending_threads', 1, json_encode([
-            'title' => $thread->title,
-            'path' => $thread->path()
-        ]));
+        $trending->push($thread);
 
         return view('threads.show', compact('thread'));
     }
@@ -106,8 +106,8 @@ class ThreadController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param        $channel
      * @param Thread $thread
-     * @param $channel
      * @return Application|Redirector|RedirectResponse
      * @throws AuthorizationException
      */
