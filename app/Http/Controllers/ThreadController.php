@@ -39,14 +39,15 @@ class ThreadController extends Controller
     {
         $threads = Thread::getThreads($filters, $channel);
 
+        $mostViewedThreads = Thread::orderBy('visits', 'desc')
+            ->take(5)
+            ->get();
+
         if (\request()->wantsJson()) {
             return $threads;
         }
 
-        return view('threads.index', [
-            'threads' => $threads,
-            'trending' => $trending->get()
-        ]);
+        return view('threads.index', compact('threads', 'mostViewedThreads'));
     }
 
     /**
@@ -62,8 +63,6 @@ class ThreadController extends Controller
         if (auth()->check()) {
             auth()->user()->read($thread);
         }
-
-        $trending->push($thread);
 
         $thread->increment('visits');
 

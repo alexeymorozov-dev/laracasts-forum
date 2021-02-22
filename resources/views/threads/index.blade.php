@@ -10,21 +10,21 @@
             </div>
 
             <div class="col-md-4">
-                @if(count($trending))
+                @if(count($mostViewedThreads))
                     <div class="card">
 
                         <div class="card-header">
-                            Trending threads
+                            Most viewed threads
                         </div>
 
                         <div class="card-body">
                             <ul class="list-group">
-                                @foreach($trending as $thread)
+                                @foreach($mostViewedThreads as $thread)
                                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <a href="{{ url($thread->path) }}">
+                                        <a href="{{ $thread->path() }}">
                                             {{ $thread->title }}
                                         </a>
-{{--                                        <i class="far fa-eye mr-1"></i>{{ $thread->visits() }}--}}
+                                        <span class="badge badge-primary badge-pill">{{ $thread->visits }}</span>
                                     </li>
                                 @endforeach
                             </ul>
