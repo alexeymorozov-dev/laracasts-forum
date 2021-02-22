@@ -34,7 +34,7 @@
 
         <div class="card-footer d-flex justify-content-between align-items-center">
 
-            <span><i class="far fa-eye mr-1"></i>{{ $thread->visits()->count() }}</span>
+            <span><i class="far fa-eye mr-1"></i>{{ $thread->visits }}</span>
 
             <a href="{{ $thread->path() }}">
                 {{ $thread->replies_count }}

@@ -6,6 +6,15 @@ namespace App\Models;
 
 use Illuminate\Support\Facades\Redis;
 
+
+/**
+ * Example of using Redis
+ *
+ * !! Not used since episode n. 70 !!
+ *
+ * Class Visits
+ * @package App\Models
+ */
 class Visits
 {
     protected $thread;
