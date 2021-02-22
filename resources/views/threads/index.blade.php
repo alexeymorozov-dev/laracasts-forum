@@ -24,7 +24,7 @@
                                         <a href="{{ url($thread->path) }}">
                                             {{ $thread->title }}
                                         </a>
-                                        <span class="badge badge-primary badge-pill">1</span>
+{{--                                        <i class="far fa-eye mr-1"></i>{{ $thread->visits() }}--}}
                                     </li>
                                 @endforeach
                             </ul>

@@ -22,14 +22,25 @@
                     </h6>
                 </div>
 
-                <a href="{{ $thread->path() }}">
-                    {{ $thread->replies_count }}
-                    {{ Str::plural('reply', $thread->replies_count) }}
-                </a>
+{{--                <a href="{{ $thread->path() }}">--}}
+{{--                    {{ $thread->replies_count }}--}}
+{{--                    {{ Str::plural('reply', $thread->replies_count) }}--}}
+{{--                </a>--}}
             </div>
         </div>
         <div class="card-body">
             <div class="body">{{ $thread->body }}</div>
+        </div>
+
+        <div class="card-footer d-flex justify-content-between align-items-center">
+            
+            <span><i class="far fa-eye mr-1"></i>{{ $thread->visits() }}</span>
+
+            <a href="{{ $thread->path() }}">
+                {{ $thread->replies_count }}
+                {{ Str::plural('reply', $thread->replies_count) }}
+            </a>
+
         </div>
     </div>
 @empty

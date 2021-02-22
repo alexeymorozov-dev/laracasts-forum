@@ -52,8 +52,9 @@ class ThreadController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param        $channel
-     * @param Thread $thread
+     * @param          $channel
+     * @param Thread   $thread
+     * @param Trending $trending
      * @return Application|Factory|View
      */
     public function show($channel, Thread $thread, Trending $trending)
@@ -63,6 +64,8 @@ class ThreadController extends Controller
         }
 
         $trending->push($thread);
+
+        $thread->recordVisit();
 
         return view('threads.show', compact('thread'));
     }

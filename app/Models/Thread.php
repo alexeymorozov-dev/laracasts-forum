@@ -6,11 +6,18 @@ use App\Events\ThreadHasNewReply;
 use App\Events\ThreadReceivedNewReply;
 use App\Filters\ThreadFilters;
 use App\Models\Traits\RecordsActivity;
+use App\Models\Traits\RecordsVisits;
+use Eloquent;
+use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Redis;
 
 /**
  * App\Models\Thread
@@ -21,40 +28,58 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $replies_count
  * @property string $title
  * @property string $body
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Activity[] $activity
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection|Activity[] $activity
  * @property-read int|null $activity_count
- * @property-read \App\Models\Channel $channel
- * @property-read \App\Models\User $creator
+ * @property-read Channel $channel
+ * @property-read User $creator
  * @property-read bool $is_subscribed_to
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Reply[] $replies
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\ThreadSubscription[] $subscriptions
+ * @property-read Collection|Reply[] $replies
+ * @property-read Collection|ThreadSubscription[] $subscriptions
  * @property-read int|null $subscriptions_count
- * @method static \Illuminate\Database\Eloquent\Builder|Thread filter($filters)
- * @method static \Illuminate\Database\Eloquent\Builder|Thread newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Thread newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Thread query()
- * @method static \Illuminate\Database\Eloquent\Builder|Thread whereBody($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Thread whereChannelId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Thread whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Thread whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Thread whereRepliesCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Thread whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Thread whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Thread whereUserId($value)
- * @mixin \Eloquent
+ * @method static Builder|Thread filter($filters)
+ * @method static Builder|Thread newModelQuery()
+ * @method static Builder|Thread newQuery()
+ * @method static Builder|Thread query()
+ * @method static Builder|Thread whereBody($value)
+ * @method static Builder|Thread whereChannelId($value)
+ * @method static Builder|Thread whereCreatedAt($value)
+ * @method static Builder|Thread whereId($value)
+ * @method static Builder|Thread whereRepliesCount($value)
+ * @method static Builder|Thread whereTitle($value)
+ * @method static Builder|Thread whereUpdatedAt($value)
+ * @method static Builder|Thread whereUserId($value)
+ * @mixin Eloquent
  */
 class Thread extends Model
 {
-    use HasFactory, RecordsActivity;
+    use HasFactory, RecordsActivity, RecordsVisits;
 
+    /**
+     * Don't auto-apply mass assignment protection.
+     *
+     * @var array
+     */
     protected $guarded = [];
 
+    /**
+     * The relationships to always eager-load.
+     *
+     * @var array
+     */
     protected $with = ['channel'];
 
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
     protected $appends = ['isSubscribedTo'];
 
+    /**
+     * Boot the model.
+     */
     protected static function boot()
     {
         parent::boot();
@@ -76,16 +101,6 @@ class Thread extends Model
     public function path()
     {
         return "/threads/{$this->channel->slug}/{$this->id}";
-    }
-
-    /**
-     * A thread has many replies
-     *
-     * @return HasMany
-     */
-    public function replies()
-    {
-        return $this->hasMany(Reply::class);
     }
 
     /**
@@ -123,6 +138,16 @@ class Thread extends Model
     }
 
     /**
+     * A thread has many replies
+     *
+     * @return HasMany
+     */
+    public function replies()
+    {
+        return $this->hasMany(Reply::class);
+    }
+
+    /**
      * Apply all relevant thread filters
      *
      * @param $query
@@ -149,6 +174,16 @@ class Thread extends Model
     }
 
     /**
+     * A thread has many subscribers
+     *
+     * @return HasMany
+     */
+    public function subscriptions()
+    {
+        return $this->hasMany(ThreadSubscription::class);
+    }
+
+    /**
      * Unsubscribe to the thread
      * @param null $userId
      */
@@ -158,16 +193,6 @@ class Thread extends Model
         $this->subscriptions()
             ->where(['user_id' => $userId ?: auth()->id()])
             ->delete();
-    }
-
-    /**
-     * A thread has many subscribers
-     *
-     * @return HasMany
-     */
-    public function subscriptions()
-    {
-        return $this->hasMany(ThreadSubscription::class);
     }
 
     /**
@@ -181,14 +206,6 @@ class Thread extends Model
             ->where('user_id', auth()->id())
             ->exists();
     }
-
-    public function hasUpdatesFor($user)
-    {
-        $key = $user->visitedThreadCacheKey($this);
-
-        return $this->updated_at > cache($key);
-    }
-
 
     /**
      * Fetch all relevant threads.
@@ -206,5 +223,19 @@ class Thread extends Model
         }
 
         return $threads->paginate(10);
+    }
+
+    /**
+     * Determine if the thread has been updated since the user last read it.
+     *
+     * @param User $user
+     * @return bool
+     * @throws Exception
+     */
+    public function hasUpdatesFor(User $user)
+    {
+        $key = $user->visitedThreadCacheKey($this);
+
+        return $this->updated_at > cache($key);
     }
 }

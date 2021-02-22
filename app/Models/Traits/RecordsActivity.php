@@ -4,9 +4,15 @@
 namespace App\Models\Traits;
 
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use ReflectionClass;
+
 trait RecordsActivity
 {
 
+    /**
+     * Boot the trait.
+     */
     protected static function bootRecordsActivity()
     {
 
@@ -23,11 +29,21 @@ trait RecordsActivity
         });
     }
 
+    /**
+     * Fetch all model events that require activity recording.
+     *
+     * @return array
+     */
     protected static function getActivitiesToRecord()
     {
         return ['created'];
     }
 
+    /**
+     * Record new activity for the model.
+     *
+     * @param string $event
+     */
     public function recordActivity($event)
     {
         if (auth()->guest()) return;
@@ -38,14 +54,25 @@ trait RecordsActivity
         ]);
     }
 
+    /**
+     * Fetch the activity relationship.
+     *
+     * @return MorphMany
+     */
     public function activity()
     {
         return $this->morphMany('App\Models\Activity', 'subject');
     }
 
+    /**
+     * Determine the activity type.
+     *
+     * @param  string $event
+     * @return string
+     */
     protected function getActivityType($event)
     {
-        $type = strtolower((new \ReflectionClass($this))->getShortName());
+        $type = strtolower((new ReflectionClass($this))->getShortName());
 
         return "{$event}_{$type}";
     }
