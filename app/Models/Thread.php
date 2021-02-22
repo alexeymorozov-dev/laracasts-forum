@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use App\Events\ThreadHasNewReply;
 use App\Events\ThreadReceivedNewReply;
 use App\Filters\ThreadFilters;
 use App\Models\Traits\RecordsActivity;
-use App\Models\Traits\RecordsVisits;
 use Eloquent;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -17,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Redis;
 
 /**
  * App\Models\Thread
@@ -54,7 +51,7 @@ use Illuminate\Support\Facades\Redis;
  */
 class Thread extends Model
 {
-    use HasFactory, RecordsActivity, RecordsVisits;
+    use HasFactory, RecordsActivity;
 
     /**
      * Don't auto-apply mass assignment protection.
@@ -76,6 +73,24 @@ class Thread extends Model
      * @var array
      */
     protected $appends = ['isSubscribedTo'];
+
+    /**
+     * Fetch all relevant threads.
+     *
+     * @param ThreadFilters $filters
+     * @param Channel $channel
+     * @return LengthAwarePaginator
+     */
+    public static function getThreads(ThreadFilters $filters, Channel $channel)
+    {
+        $threads = Thread::latest()->filter($filters);
+
+        if ($channel->exists) {
+            $threads->where('channel_id', $channel->id);
+        }
+
+        return $threads->paginate(10);
+    }
 
     /**
      * Boot the model.
@@ -208,24 +223,6 @@ class Thread extends Model
     }
 
     /**
-     * Fetch all relevant threads.
-     *
-     * @param ThreadFilters $filters
-     * @param Channel $channel
-     * @return LengthAwarePaginator
-     */
-    public static function getThreads(ThreadFilters $filters, Channel $channel)
-    {
-        $threads = Thread::latest()->filter($filters);
-
-        if ($channel->exists) {
-            $threads->where('channel_id', $channel->id);
-        }
-
-        return $threads->paginate(10);
-    }
-
-    /**
      * Determine if the thread has been updated since the user last read it.
      *
      * @param User $user
@@ -237,5 +234,10 @@ class Thread extends Model
         $key = $user->visitedThreadCacheKey($this);
 
         return $this->updated_at > cache($key);
+    }
+
+    public function visits()
+    {
+        return new Visits($this);
     }
 }
